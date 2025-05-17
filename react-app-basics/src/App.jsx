@@ -1,5 +1,4 @@
 import './App.css'
-import Greetings from './components/Greetings'
 import React, { useEffect, useState } from 'react'
 import {BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom'
 import EmployeeForm from './components/EmployeeForm'
@@ -15,11 +14,13 @@ import Counter from './components/useStateCounter'
 import Props from './components/usingProps'
 import TicTacToe from './components/TicTacToe'
 import Ecommerce from './components/Ecommerce'
+import Snapshot from './components/stateAsSnapshot'
+import MovingDot from './components/MovingDot'
+import DynamicUpdate from './components/useImmerDynamic'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [data, setData] = useState([])
   const [employees, setEmployees] = useState([]);
+  const[dark, setDark] = useState(true);
   const registerEmployee =  (emp) => {
     const newEmp = {
       ...emp,
@@ -35,18 +36,12 @@ function App() {
     );
     setEmployees(updatedEmp);
   };
-
-  useEffect(() => {}, [count])
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users')
-      setData(await response.json())
-    }
-    fetchData()
-  }, [])
+  const handleMode = ()=>{
+    setDark(!dark);
+  }
 
   return (
-    <>
+    <div style={dark ? {backgroundColor: 'black', color:'white'}:{}}>
       <Router>
         <div>
           <nav>
@@ -58,12 +53,15 @@ function App() {
               <li><Link to="/hr">HR Panel</Link></li>
             </ul>
           </nav>
+          <div>
+            <button onClick={handleMode}>{dark?"Light Theme":"Dark Theme"}</button>
+          </div>
           <div className="content">
             <Routes>
               <Route path="/" element={
                 <div className="home">
+                  <hr></hr>
                   <div>
-                    <hr></hr>
                     <Gallery/>
                     <TodoList/>
                     <Render/>
@@ -73,44 +71,15 @@ function App() {
                     <Props/>
                     <TicTacToe/>
                     <Ecommerce/>
+                    <Snapshot/>
+                    <MovingDot/>
+                    <DynamicUpdate/>
                   </div>
                   <hr></hr>
-                  <h1>Rough Work</h1>
-                  <div className='greet'>
-                    <Greetings name="John" /><br />
-                    <Greetings name="Jane" /><br />
-                    <Greetings name="Doe" /><br />
+                  <div>
+                    <h1>Welcome to Employee Management Dashboard</h1>
+                    <p>Use the navigation menu to manage employees.</p>
                   </div>
-                  <div className="counter">
-                    <p>Count: {count}</p>
-                    <button onClick={() => setCount(count + 1)}>Increase</button>
-                    <button onClick={() => setCount(count - 1)}>Decrease</button>
-                    <button onClick={() => setCount(0)}>Reset</button>
-                  </div>
-                  <br/>
-                  <div className='scraped-data'>
-                    <table border={1} cellPadding={5} cellSpacing={0}>
-                      <caption>Users List</caption>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Company Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.map((user) => (
-                          <tr key={user.id}>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.company.name}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <h1>Welcome to Employee Management Dashboard</h1>
-                  <p>Use the navigation menu to manage employees.</p>
                 </div>
               } />
               <Route path="/register" element={<EmployeeForm registerEmployee={registerEmployee} />} />
@@ -129,7 +98,7 @@ function App() {
       <div className="footer">
         <p>&copy; 2023 Employee Management System</p>
       </div>
-    </>
+    </div>
   )
 }
 
