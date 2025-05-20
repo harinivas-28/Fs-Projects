@@ -17,6 +17,12 @@ import Ecommerce from './components/Ecommerce'
 import Snapshot from './components/stateAsSnapshot'
 import MovingDot from './components/MovingDot'
 import DynamicUpdate from './components/useImmerDynamic'
+import UpdateInState from './components/updateInState'
+import ReactingToInput from './components/ReactingToInput'
+import UseReducerTasks from './components/useReducerTasks'
+import UseMemoHook from './components/useMemoHook'
+import patients from './components/patients'
+import UseComp from './components/userComp'
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -74,6 +80,11 @@ function App() {
                     <Snapshot/>
                     <MovingDot/>
                     <DynamicUpdate/>
+                    <UpdateInState/>
+                    <ReactingToInput/>
+                    <UseReducerTasks/>
+                    <UseMemoHook patients={patients}/>
+                    <UseComp/>
                   </div>
                   <hr></hr>
                   <div>
