@@ -1,8 +1,19 @@
 #root {
   color: #000;
-  max-width: 1280px;
   margin: 0 auto;
   text-align: center;
+}
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #f0f0f0;
+}
+
+.app-container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  margin: 0 auto;
 }
 
 .logo {
@@ -103,20 +114,6 @@ body {
   color: #dc3545;
   font-size: 12px;
   margin-top: 5px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #0069d9;
 }
 
 .section-title {

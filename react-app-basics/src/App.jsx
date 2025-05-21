@@ -26,10 +26,12 @@ import UseComp from './components/userComp'
 import LazyAndSuspense from './components/lazyAndSuspense'
 import Arrows from './components/Arrows'
 import NavBar from './NavBar'
+import { useTheme } from './context/ThemeContext'
+import ThemeToggle from './components/ThemeToggle'
 
 function App() {
   const [employees, setEmployees] = useState([]);
-  const[dark, setDark] = useState(true);
+  const {theme} = useTheme();
   const bottomRef = useRef(null);
   const topRef = useRef(null);
   const registerEmployee =  (emp) => {
@@ -47,19 +49,14 @@ function App() {
     );
     setEmployees(updatedEmp);
   };
-  const handleMode = ()=>{
-    setDark(!dark);
-  }
 
   return (
-    <div ref={topRef} style={dark ? {backgroundColor: 'black', color:'white'}:{}}>
+    <div ref={topRef} className={`app-container ${theme}`}>
       <Router>
         <div>
           <NavBar/>
           <br></br>
-          <div>
-            <button onClick={handleMode}>{dark?"Light Theme":"Dark Theme"}</button>
-          </div>
+          <ThemeToggle/>
           <div className="content">
             <Routes>
               <Route path="/" element={
