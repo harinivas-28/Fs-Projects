@@ -1,6 +1,6 @@
 import './App.css'
-import React, { useEffect, useState } from 'react'
-import {BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom'
+import { useRef, useState } from 'react'
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import EmployeeForm from './components/EmployeeForm'
 import EmployeeList from './components/EmployeeList'
 import AdminPanel from './components/AdminPanel'
@@ -23,10 +23,15 @@ import UseReducerTasks from './components/useReducerTasks'
 import UseMemoHook from './components/useMemoHook'
 import patients from './components/patients'
 import UseComp from './components/userComp'
+import LazyAndSuspense from './components/lazyAndSuspense'
+import Arrows from './components/Arrows'
+import NavBar from './NavBar'
 
 function App() {
   const [employees, setEmployees] = useState([]);
   const[dark, setDark] = useState(true);
+  const bottomRef = useRef(null);
+  const topRef = useRef(null);
   const registerEmployee =  (emp) => {
     const newEmp = {
       ...emp,
@@ -47,18 +52,11 @@ function App() {
   }
 
   return (
-    <div style={dark ? {backgroundColor: 'black', color:'white'}:{}}>
+    <div ref={topRef} style={dark ? {backgroundColor: 'black', color:'white'}:{}}>
       <Router>
         <div>
-          <nav>
-            <ul>
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/register">Register Employee</Link></li>
-              <li><Link to="/employees">All Employees</Link></li>
-              <li><Link to="/admin">Admin Panel</Link></li>
-              <li><Link to="/hr">HR Panel</Link></li>
-            </ul>
-          </nav>
+          <NavBar/>
+          <br></br>
           <div>
             <button onClick={handleMode}>{dark?"Light Theme":"Dark Theme"}</button>
           </div>
@@ -85,6 +83,8 @@ function App() {
                     <UseReducerTasks/>
                     <UseMemoHook patients={patients}/>
                     <UseComp/>
+                    <LazyAndSuspense/>
+                    <Arrows bottomRef={bottomRef} topRef={topRef}/>
                   </div>
                   <hr></hr>
                   <div>
@@ -109,6 +109,7 @@ function App() {
       <div className="footer">
         <p>&copy; 2023 Employee Management System</p>
       </div>
+      <div ref={bottomRef}>Bottom of the Page (uses useRef as Reference to the end to scroll to the end)</div>
     </div>
   )
 }
