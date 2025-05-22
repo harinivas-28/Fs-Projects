@@ -22,12 +22,13 @@ import ReactingToInput from './components/ReactingToInput'
 import UseReducerTasks from './components/useReducerTasks'
 import UseMemoHook from './components/useMemoHook'
 import patients from './components/patients'
-import UseComp from './components/userComp'
 import LazyAndSuspense from './components/lazyAndSuspense'
 import Arrows from './components/Arrows'
 import NavBar from './NavBar'
 import { useTheme } from './context/ThemeContext'
 import ThemeToggle from './components/ThemeToggle'
+import UseRefTime from './components/useRefTime'
+import UseContext from './components/useContextComp'
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -57,6 +58,7 @@ function App() {
           <NavBar/>
           <br></br>
           <ThemeToggle/>
+          <p>Road Map: <a href='https://react.dev/learn/'>Learn React</a></p>
           <div className="content">
             <Routes>
               <Route path="/" element={
@@ -79,9 +81,10 @@ function App() {
                     <ReactingToInput/>
                     <UseReducerTasks/>
                     <UseMemoHook patients={patients}/>
-                    <UseComp/>
+                    <UseContext/>
                     <LazyAndSuspense/>
                     <Arrows bottomRef={bottomRef} topRef={topRef}/>
+                    <UseRefTime/>
                   </div>
                   <hr></hr>
                   <div>
@@ -106,7 +109,7 @@ function App() {
       <div className="footer">
         <p>&copy; 2023 Employee Management System</p>
       </div>
-      <div ref={bottomRef}>Bottom of the Page (uses useRef as Reference to the end to scroll to the end)</div>
+      <div ref={bottomRef}>Bottom of the Page (uses useRef as Reference to the end, to scroll to the end)</div>
     </div>
   )
 }

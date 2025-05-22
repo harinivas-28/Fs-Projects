@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { AuthContext } from "./createAuthContext";
+import { AuthContext } from "../context/AuthContext";
 
-export default function UseComp(){
+export default function UseContext(){
     const {user,login, logout} = useContext(AuthContext);
     return (
         <div>
@@ -16,6 +16,7 @@ export default function UseComp(){
                 onClick={()=>login({name:"Dr. Smith", role:"Doctor"})}
                 >Login as Dr.Smith</button>
             )}
+            <h5>The Change Theme is also made up of using useContext Hook</h5>
         </div>
     );
 }

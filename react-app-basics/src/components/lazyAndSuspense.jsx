@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from "react"
 import { SyncLoader } from "react-spinners";
+import { useTheme } from "../context/ThemeContext";
 
 const LazyComp = lazy(() =>
     Promise.resolve({
@@ -45,10 +46,11 @@ const LazyComp = lazy(() =>
 );
 
 export default function LazyAndSuspense(){
+    const {theme} = useTheme();
     return (
         <>
         <h1>17. Lazy Loading and Suspense</h1>
-        <Suspense fallback={<SyncLoader color="white" />}>
+        <Suspense fallback={<SyncLoader color={theme==='light'?"black":"white"}/>}>
             <LazyComp />
         </Suspense>
         <p>Try Reloading Page, you might see Loader</p>
