@@ -29,6 +29,7 @@ import { useTheme } from './context/ThemeContext'
 import ThemeToggle from './components/ThemeToggle'
 import UseRefTime from './components/useRefTime'
 import UseContext from './components/useContextComp'
+import UseEffectVideoRender from './components/useEffectVideoRender'
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -59,6 +60,33 @@ function App() {
           <br></br>
           <ThemeToggle/>
           <p>Road Map: <a href='https://react.dev/learn/'>Learn React</a></p>
+          <div>
+            <h1>Learn React With Me</h1>
+            <hr></hr>
+            <h3><u>You will learn</u></h3>
+            <p>1. Creating your first component</p>
+            <p>2. Writing Markup</p>
+            <p>3. Conditional Rendering</p>
+            <p>4. Rendering Lists</p>
+            <p>5. Responding to Events</p>
+            <p>6. Using Hooks</p>
+            <sub>6.1 Use State</sub>{' '}
+            <sub>6.2 Using Props</sub>
+            <p>7. TicTacToe Game</p>
+            <p>8. Ecommerce Example</p>
+            <p>9. State as a SnapShot</p>
+            <p>10. Moving Dot</p>
+            <p>11. Use Immer Hook</p>
+            <p>12. Updating Arrays in State</p>
+            <p>13. Reacting to Input with State</p>
+            <p>14. Use Reducer Hook</p>
+            <p>15. Use Memo Hook</p>
+            <p>16. Use Context</p>
+            <p>17. Lazy Loading and Suspense</p>
+            <p>18. Arrow Functionality</p>
+            <p>19. Use Ref Hook</p>
+            <p>20. Use Effect Hook</p>
+          </div>
           <div className="content">
             <Routes>
               <Route path="/" element={
@@ -85,6 +113,7 @@ function App() {
                     <LazyAndSuspense/>
                     <Arrows bottomRef={bottomRef} topRef={topRef}/>
                     <UseRefTime/>
+                    <UseEffectVideoRender/>
                   </div>
                   <hr></hr>
                   <div>
