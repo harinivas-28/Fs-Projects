@@ -13,7 +13,6 @@ export default function Step3({props}){
     }
     const handleNext = ()=>{
         setStep(4);
-        console.log(data);
     }
     const handlePrev =()=>{
         setStep(2);

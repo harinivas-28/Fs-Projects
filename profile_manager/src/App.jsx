@@ -1,4 +1,5 @@
 import './App.css'
+import ShowProfiles from './components/allProfiles'
 import NewProfile from './components/newProfile'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       </nav>
       <div>
         <NewProfile></NewProfile>
+        <ShowProfiles></ShowProfiles>
       </div>
     </>
   )

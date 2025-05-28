@@ -13,7 +13,6 @@ export default function Step1({props}){
     };
     const handleNext = ()=>{
         setStep(2);
-        console.log(data);
     }
     const checkNull = () => {
         return !data.personalinfo.name || !data.personalinfo.email || !data.personalinfo.phone;
