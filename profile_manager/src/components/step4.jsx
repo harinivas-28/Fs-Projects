@@ -31,7 +31,7 @@ export default function Step4({ props }) {
             <h1>Step 4: Acheivements</h1>
             <InputForm placeholder="Achievements(comma-seperated)" setField={handleChange("achievements")} value={data.achievements || ""}></InputForm>
             <button onClick={handlePrev}>Previous</button>
-            <button onClick={handleSubmit}>Submit</button>
+            <button disabled={!data.achievements} onClick={handleSubmit}>Submit</button>
             <p>{response}</p>
         </>
     );
