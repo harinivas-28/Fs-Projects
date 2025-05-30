@@ -32,7 +32,8 @@ function App() {
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
   const [registerSuccess, setRegisterSuccess] = useState('');
-  const [pageView, setPageView] = useState('register');
+  // Set login as default route
+  const [pageView, setPageView] = useState('login'); // 'login' | 'signUp'
 
   const fetchProducts = async () => {
     try {
@@ -158,7 +159,7 @@ function App() {
             <Button
               color="inherit"
               type="button"
-              onClick={() => setPageView('register')}
+              onClick={() => setPageView('signUp')}
               data-testid="navbar-register-button"
             >
               Register
@@ -178,11 +179,10 @@ function App() {
       <>
         <Navbar />
         <Box sx={{ maxWidth: 500, mx: 'auto', mt: 4 }}>
-          {pageView === 'register' && (
+          {pageView === 'signUp' && (
             <Paper elevation={3} sx={{ p: 4 }}>
               <Typography variant="h5" gutterBottom>Register</Typography>
               {registerError && <Alert severity="error">{registerError}</Alert>}
-              {registerSuccess && <Alert severity="success">{registerSuccess}</Alert>}
               <form onSubmit={handleRegister}>
                 <TextField
                   label="Username"
@@ -207,9 +207,15 @@ function App() {
                   sx={{ mt: 2 }}
                   data-testid="form-register-button"
                 >
-                  REGISTER
+                  Register
                 </Button>
               </form>
+              {/* Display acknowledgement below the form */}
+              {registerSuccess && (
+                <Box sx={{ mt: 2 }}>
+                  <Alert severity="success">{registerSuccess}</Alert>
+                </Box>
+              )}
             </Paper>
           )}
           {pageView === 'login' && (
@@ -240,7 +246,7 @@ function App() {
                   sx={{ mt: 2 }}
                   data-testid="form-login-button"
                 >
-                  LOGIN
+                  Login
                 </Button>
               </form>
             </Paper>
