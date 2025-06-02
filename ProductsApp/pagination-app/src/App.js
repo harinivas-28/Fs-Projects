@@ -5,7 +5,7 @@ import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TablePagination, TextField, Button, Box, Typography,
-  Alert, AppBar, Toolbar
+  Alert, AppBar, Toolbar, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
 
 // Helper to get token
@@ -14,6 +14,17 @@ function getToken() {
   if (!auth) return null;
   try {
     return JSON.parse(auth).token;
+  } catch {
+    return null;
+  }
+}
+
+// Update helper function to get full auth object
+function getAuth() {
+  const auth = localStorage.getItem('auth');
+  if (!auth) return null;
+  try {
+    return JSON.parse(auth);
   } catch {
     return null;
   }
@@ -28,18 +39,23 @@ function App() {
   const [editRowData, setEditRowData] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(!!getToken());
   const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [registerData, setRegisterData] = useState({ username: '', password: '' });
+  const [registerData, setRegisterData] = useState({ 
+    username: '', 
+    password: '',
+    role: 'consumer' // Add default role
+  });
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
   const [registerSuccess, setRegisterSuccess] = useState('');
   // Set login as default route
   const [pageView, setPageView] = useState('login'); // 'login' | 'signUp'
+  const [userRole, setUserRole] = useState(getAuth()?.role || null);
 
   const fetchProducts = async () => {
     try {
       const token = getToken();
       if (!token) return;
-      const res = await axios.get('http://192.168.28.104:5000/', {
+      const res = await axios.get('http://192.168.27.129:5000/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProducts(res.data);
@@ -87,7 +103,7 @@ function App() {
       const token = getToken();
       const { name, price, category, inStock } = editRowData;
       await axios.put(
-        `http://192.168.28.104:5000/products/${editRowId}`,
+        `http://192.168.27.129:5000/products/${editRowId}`,
         { name, price, category, inStock },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -100,7 +116,7 @@ function App() {
   const handleDelete = async (id) => {
     try {
       const token = getToken();
-      await axios.delete(`http://192.168.28.104:5000/products/${id}`, {
+      await axios.delete(`http://192.168.27.129:5000/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       await fetchProducts();
@@ -112,31 +128,71 @@ function App() {
     setRegisterError('');
     setRegisterSuccess('');
     try {
-      const res = await axios.post('http://192.168.28.104:5000/register', registerData);
+      // Ensure role is included in request
+      const registerPayload = {
+        username: registerData.username,
+        password: registerData.password,
+        role: registerData.role || 'consumer'
+      };
+      
+      const res = await axios.post('http://192.168.27.129:5000/register', registerPayload);
       setRegisterSuccess(res.data.message);
-      setRegisterData({ username: '', password: '' });
+      setRegisterData({ username: '', password: '', role: 'consumer' });
     } catch (err) {
       setRegisterError(err.response?.data?.message || 'Registration failed: Unknown error');
     }
   };
 
+  // Update login handler
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError('');
     try {
-      const res = await axios.post('http://192.168.28.104:5000/login', loginData);
-      localStorage.setItem('auth', JSON.stringify({ token: res.data.token }));
+      const res = await axios.post('http://192.168.27.129:5000/login', loginData);
+      localStorage.setItem('auth', JSON.stringify({
+        token: res.data.token,
+        role: res.data.role
+      }));
       setIsLoggedIn(true);
+      setUserRole(res.data.role);
       setLoginData({ username: '', password: '' });
     } catch (err) {
       setLoginError(err.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
+  // Update logout handler
   const handleLogout = () => {
     localStorage.removeItem('auth');
     setIsLoggedIn(false);
+    setUserRole(null);
     setProducts([]);
+  };
+
+  // Add role-based action rendering
+  const renderActions = (product) => {
+    if (userRole !== 'admin') return null;
+    return (
+      <>
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={() => handleEdit(product)}
+          sx={{ mr: 1 }}
+        >
+          Edit
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          size="small"
+          onClick={() => handleDelete(product._id)}
+        >
+          Delete
+        </Button>
+      </>
+    );
   };
 
   const Navbar = () => (
@@ -201,6 +257,18 @@ function App() {
                   fullWidth margin="normal"
                   required
                 />
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="role-label">Role</InputLabel>
+                  <Select
+                    labelId="role-label"
+                    value={registerData.role}
+                    label="Role"
+                    onChange={e => setRegisterData({ ...registerData, role: e.target.value })}
+                  >
+                    <MenuItem value="consumer">Consumer</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                  </Select>
+                </FormControl>
                 <Button
                   type="submit"
                   variant="contained"
@@ -284,7 +352,7 @@ function App() {
                 <TableCell><strong>Price</strong></TableCell>
                 <TableCell><strong>Category</strong></TableCell>
                 <TableCell><strong>In Stock</strong></TableCell>
-                <TableCell><strong>Actions</strong></TableCell>
+                {userRole === 'admin' && <TableCell><strong>Actions</strong></TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -327,16 +395,18 @@ function App() {
                             onChange={handleEditChange}
                           />
                         </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            onClick={handleSave}
-                          >
-                            Save
-                          </Button>
-                        </TableCell>
+                        {userRole === 'admin' && (
+                          <TableCell>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              size="small"
+                              onClick={handleSave}
+                            >
+                              Save
+                            </Button>
+                          </TableCell>
+                        )}
                       </>
                     ) : (
                       <>
@@ -344,25 +414,11 @@ function App() {
                         <TableCell>${product.price.toFixed(2)}</TableCell>
                         <TableCell>{product.category}</TableCell>
                         <TableCell>{product.inStock ? 'Yes' : 'No'}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            size="small"
-                            onClick={() => handleEdit(product)}
-                            sx={{ mr: 1 }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            size="small"
-                            onClick={() => handleDelete(product._id)}
-                          >
-                            Delete
-                          </Button>
-                        </TableCell>
+                        {userRole === 'admin' && (
+                          <TableCell>
+                            {renderActions(product)}
+                          </TableCell>
+                        )}
                       </>
                     )}
                   </TableRow>
